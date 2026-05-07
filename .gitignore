@@ -1,0 +1,22 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+*.swn
+
+# Raw datasets are stored locally
+data/raw/
+
+# Generated models
+models/*.pt
+models/*.pth
+models/*.joblib
+
+# Temporary files
+*.tmp
