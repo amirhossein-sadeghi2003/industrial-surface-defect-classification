@@ -2,109 +2,96 @@
 
 Computer vision project for classifying industrial surface defects using deep learning and transfer learning.
 
-This project is planned as a visual inspection and defect classification pipeline using a real industrial surface defect image dataset.
+This repository is being developed as an AI-focused portfolio project for automated visual inspection in industrial environments. The project uses a real surface defect image dataset and builds a defect classification pipeline with PyTorch.
 
-The goal is to build an AI-focused portfolio project that connects computer vision, industrial inspection, transfer learning, and model evaluation.
+## Project Goal
 
----
+The goal of this project is to build an end-to-end image classification workflow for industrial defect inspection by combining:
 
-## Project Overview
+- computer vision
+- image classification
+- deep learning
+- transfer learning
+- industrial AI
+- model evaluation and visualization
 
-Industrial surface defects can appear in manufacturing processes such as steel production, machining, rolling, coating, and visual quality inspection.
+This project is intended to be one of the more visually impressive repositories in my portfolio.
 
-This project will use image classification to recognize defect categories from surface images.
+## Dataset
 
-The planned workflow is:
+This project currently uses the **NEU Surface Defect Dataset (NEU-DET)**.
 
-```text
-Industrial defect image dataset
-Image preprocessing
-Train / validation / test split
-CNN or transfer learning model
-Training curves
-Confusion matrix
-Sample predictions
-Model interpretation
-```
-
----
-
-## Motivation
-
-Visual inspection is an important part of industrial monitoring and quality control.
-
-Traditional inspection can be slow, manual, and inconsistent. Computer vision models can help automate defect recognition from images.
-
-This project is designed as a pure AI / computer vision project while still staying close to engineering and intelligent monitoring systems.
-
-It complements my other portfolio projects in:
-
-- embedded AI
-- sensor-based condition monitoring
-- vibration-based fault diagnosis
-- IoT digital twin systems
-- dynamic system modeling
-
----
-
-## Planned Dataset
-
-The intended dataset is an industrial surface defect image dataset such as the NEU Surface Defect Database.
-
-The dataset will contain surface defect images from industrial materials such as steel.
-
-Possible defect categories include:
+The dataset contains **6 defect classes**:
 
 - crazing
 - inclusion
 - patches
-- pitted surface
-- rolled-in scale
+- pitted_surface
+- rolled-in_scale
 - scratches
 
-Raw dataset files will be stored locally under:
+Current dataset split used in the project:
 
-```text
-data/raw/
-```
+- **train:** 1440 images
+- **validation:** 360 images
+- **total:** 1800 images
 
-Raw dataset files are not tracked in Git.
+Each class is balanced:
 
----
+- 240 training images per class
+- 60 validation images per class
 
-## Planned Models
+## Dataset Visualization
 
-Initial model candidates:
+### Sample Defect Images
 
-- simple baseline CNN
-- transfer learning with a pretrained vision model
-- optional lightweight model comparison
+![Sample Defect Images](results/sample_defect_images.png)
 
-Possible pretrained models:
+### Class Distribution
 
-- ResNet
-- MobileNet
-- EfficientNet
-- ConvNeXt or other `timm` models
+![Dataset Class Distribution](results/dataset_class_distribution.png)
 
-The first version will focus on a clean and understandable image classification pipeline.
+## Current Project Status
 
----
+The project currently includes:
 
-## Planned Outputs
+- dataset download and local organization
+- dataset inspection script
+- class distribution export
+- sample image visualization
+- baseline CNN training pipeline
+- training curve visualization
+- confusion matrix visualization
 
-The project is expected to generate:
+## Baseline CNN
 
-- training and validation accuracy curves
-- training and validation loss curves
-- confusion matrix
-- model comparison table
-- sample prediction grid
-- optional Grad-CAM visualizations
+A first baseline convolutional neural network has been trained on the NEU-DET dataset.
 
-These outputs will make the repository visually clear and suitable for GitHub presentation.
+### Baseline Validation Performance
 
----
+- **Best validation accuracy:** `0.8833`
+- **Final validation accuracy:** about `0.87`
+
+### Classification Report
+
+- crazing: strong performance
+- patches: very strong performance
+- rolled-in_scale: strong recall
+- inclusion: currently more difficult
+- pitted_surface: moderate performance
+- scratches: good overall performance
+
+This baseline provides a solid starting point before moving to transfer learning models such as ResNet18.
+
+## Training Results
+
+### Training Curves
+
+![Baseline CNN Training Curves](results/baseline_cnn_training_curves.png)
+
+### Confusion Matrix
+
+![Baseline CNN Confusion Matrix](results/baseline_cnn_confusion_matrix.png)
 
 ## Repository Structure
 
@@ -117,111 +104,79 @@ industrial-surface-defect-classification/
 ├── models/
 ├── results/
 ├── src/
-├── requirements.txt
+│   ├── inspect_dataset.py
+│   └── train_baseline_cnn.py
 ├── .gitignore
-└── README.md
+├── README.md
+└── requirements.txt
 ```
 
----
+## Main Files
 
-## Current Status
+Important files currently included in the project:
 
-Completed:
-
-- project folder created
-- Python virtual environment created
-- PyTorch and torchvision installed
-- common computer vision and machine learning dependencies prepared
-- local wheelhouse prepared for offline installation if needed
-
-Next steps:
-
-- download and organize the dataset
-- inspect dataset structure
-- build data loading pipeline
-- train the first baseline model
-- generate result plots and README visuals
-
----
-
-## Dependencies
-
-Main planned libraries:
-
-- `torch`
-- `torchvision`
-- `numpy`
-- `pandas`
-- `matplotlib`
-- `scikit-learn`
-- `pillow`
-- `tqdm`
-
-Optional libraries prepared for later stages:
-
-- `opencv-python`
-- `albumentations`
-- `scikit-image`
-- `timm`
-- `torchmetrics`
-- `grad-cam`
-
----
+- `src/inspect_dataset.py`
+- `src/train_baseline_cnn.py`
+- `results/sample_defect_images.png`
+- `results/dataset_class_distribution.csv`
+- `results/dataset_class_distribution.png`
+- `results/baseline_cnn_training_curves.png`
+- `results/baseline_cnn_confusion_matrix.png`
 
 ## How to Run
 
-The project is still in the setup stage.
-
-Create and activate the virtual environment:
+### 1. Create and activate a virtual environment
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-Install dependencies:
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Training and evaluation commands will be added after the dataset and model pipeline are implemented.
+### 3. Inspect the dataset
 
----
+```bash
+python src/inspect_dataset.py
+```
 
-## Project Role in Portfolio
+### 4. Train the baseline CNN
 
-This project is intended to be a visually strong AI / computer vision project.
+```bash
+python src/train_baseline_cnn.py
+```
 
-It adds a pure image-based deep learning project to a portfolio that already includes:
+## Current Results Summary
 
-- sensor-based embedded AI
-- real vibration fault diagnosis
-- IoT and digital twin systems
-- dynamic system simulation
-- state estimation and Kalman filtering
+At this stage, the project demonstrates that:
 
-The main purpose is to demonstrate computer vision, transfer learning, model evaluation, and visual inspection using real image data.
+- a real industrial defect dataset has been integrated successfully
+- the dataset structure has been inspected and visualized
+- a baseline deep learning model can achieve promising performance
+- the project already has meaningful visual outputs for portfolio presentation
 
----
+## Next Steps
 
-## Future Work
+Planned next improvements:
 
-Planned extensions:
+- add **transfer learning** with ResNet18
+- compare baseline CNN vs pretrained model
+- improve augmentation strategy
+- save prediction examples
+- add Grad-CAM visual explanations
+- improve error analysis for hard classes like `inclusion`
 
-- add the real dataset
-- implement image preprocessing
-- train a baseline CNN
-- train a transfer learning model
-- compare model performance
-- add sample prediction visualizations
-- add Grad-CAM model interpretation
-- improve README with dataset examples and result figures
+## Portfolio Relevance
 
----
+This project strengthens my portfolio in:
 
-## Summary
-
-This repository is the starting point for an industrial surface defect classification project.
-
-The final goal is to build a clean computer vision pipeline for classifying real defect images and presenting the results through clear plots, sample predictions, and model evaluation.
+- artificial intelligence
+- computer vision
+- industrial inspection
+- deep learning with PyTorch
+- practical ML experimentation
+- intelligent physical systems
