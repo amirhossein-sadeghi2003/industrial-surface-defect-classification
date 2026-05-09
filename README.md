@@ -1,8 +1,8 @@
 # Industrial Surface Defect Classification
 
-Computer vision project for **industrial surface defect classification** using PyTorch, deep learning, transfer learning, and real defect image data.
+Computer vision project for **industrial surface defect classification** using PyTorch, deep learning, transfer learning, Grad-CAM explainability, and real defect image data.
 
-This repository is an AI-focused portfolio project for automated visual inspection in industrial environments. It demonstrates a practical workflow for classifying surface defects from image data, including dataset inspection, model training, evaluation, visualization, prediction examples, and model comparison.
+This repository is an AI-focused portfolio project for automated visual inspection in industrial environments. It demonstrates a practical workflow for classifying surface defects from image data, including dataset inspection, model training, evaluation, visualization, prediction examples, Grad-CAM visual explanations, and model comparison.
 
 ---
 
@@ -23,6 +23,7 @@ NEU-DET surface defect dataset
 → training curve visualization
 → confusion matrix evaluation
 → prediction example visualization
+→ Grad-CAM visual explanation
 → model comparison
 ```
 
@@ -41,6 +42,7 @@ This project is designed as a pure AI / computer vision project while still stay
 - quality control
 - defect recognition
 - AI-assisted manufacturing
+- explainable visual inspection
 
 It complements my other portfolio projects in embedded AI, sensor-based condition monitoring, vibration-based fault diagnosis, IoT digital twins, dynamic systems, and state estimation.
 
@@ -141,6 +143,18 @@ Training script:
 src/train_resnet18.py
 ```
 
+### 3. Grad-CAM Explainability
+
+Grad-CAM is used to visualize which image regions contribute most strongly to the ResNet18 prediction.
+
+This adds an explainability layer to the classification pipeline and helps inspect whether the model focuses on visually meaningful defect regions.
+
+Grad-CAM script:
+
+```text
+src/create_gradcam_examples.py
+```
+
 ---
 
 ## Results
@@ -156,7 +170,7 @@ src/train_resnet18.py
 
 Both models achieved similar validation accuracy on the current validation split.
 
-The baseline CNN performs competitively despite being trained from scratch, while ResNet18 transfer learning provides a strong reference point for future improvements such as partial fine-tuning, stronger data augmentation, and visual explainability.
+The baseline CNN performs competitively despite being trained from scratch, while ResNet18 transfer learning provides a strong reference point for future improvements such as partial fine-tuning, stronger data augmentation, and deeper visual explainability.
 
 Official comparison outputs:
 
@@ -207,7 +221,7 @@ ResNet18 validation summary:
 | Final validation accuracy | about 0.87 |
 | Macro F1-score | about 0.87 |
 
-The ResNet18 model improves some class-level metrics, especially for classes such as `inclusion` and `pitted_surface`, but still shows tradeoffs between defect categories. This suggests that future work should focus on fine-tuning, augmentation, and visual interpretation.
+The ResNet18 model improves some class-level metrics, especially for classes such as `inclusion` and `pitted_surface`, but still shows tradeoffs between defect categories. This suggests that future work should focus on fine-tuning, augmentation, and more detailed failure-case analysis.
 
 ---
 
@@ -241,6 +255,38 @@ results/prediction_examples_resnet18.png
 
 ---
 
+## Grad-CAM Visual Explanations
+
+### ResNet18 Grad-CAM Examples
+
+![Grad-CAM Examples](results/gradcam_resnet18_examples.png)
+
+This figure shows Grad-CAM visual explanations for example validation images from the trained ResNet18 model.
+
+Grad-CAM highlights image regions that contribute most strongly to the model's prediction. This makes the project more interpretable and provides insight into how the model focuses on different surface defect patterns.
+
+This visualization is useful for:
+
+- understanding model attention
+- improving interpretability
+- analyzing correct and uncertain predictions
+- inspecting whether the model focuses on meaningful defect regions
+- making the project more explainable beyond standard classification metrics
+
+Grad-CAM visualization script:
+
+```text
+src/create_gradcam_examples.py
+```
+
+Output:
+
+```text
+results/gradcam_resnet18_examples.png
+```
+
+---
+
 ## Repository Structure
 
 ```text
@@ -253,6 +299,7 @@ industrial-surface-defect-classification/
 │   ├── baseline_cnn_training_curves.png
 │   ├── dataset_class_distribution.csv
 │   ├── dataset_class_distribution.png
+│   ├── gradcam_resnet18_examples.png
 │   ├── model_comparison.csv
 │   ├── model_comparison.png
 │   ├── prediction_examples_resnet18.png
@@ -260,6 +307,7 @@ industrial-surface-defect-classification/
 │   ├── resnet18_training_curves.png
 │   └── sample_defect_images.png
 ├── src/
+│   ├── create_gradcam_examples.py
 │   ├── create_model_comparison.py
 │   ├── create_prediction_examples.py
 │   ├── inspect_dataset.py
@@ -289,6 +337,9 @@ industrial-surface-defect-classification/
 - `src/create_prediction_examples.py`  
   Loads the trained ResNet18 model and creates a grid of validation prediction examples.
 
+- `src/create_gradcam_examples.py`  
+  Generates Grad-CAM visual explanations for example validation images using the trained ResNet18 model.
+
 - `results/sample_defect_images.png`  
   Grid of sample images from each defect class.
 
@@ -315,6 +366,9 @@ industrial-surface-defect-classification/
 
 - `results/prediction_examples_resnet18.png`  
   Example validation predictions produced by the ResNet18 model.
+
+- `results/gradcam_resnet18_examples.png`  
+  Grad-CAM heatmap and overlay examples showing which image regions influence the ResNet18 predictions.
 
 ---
 
@@ -369,6 +423,12 @@ python src/create_model_comparison.py
 python src/create_prediction_examples.py
 ```
 
+### 8. Create Grad-CAM visual explanations
+
+```bash
+python src/create_gradcam_examples.py
+```
+
 ---
 
 ## Dependencies
@@ -392,6 +452,8 @@ Additional libraries prepared for future stages:
 - `torchmetrics`
 - `grad-cam`
 
+Note: the current Grad-CAM visualization script uses a lightweight custom implementation with PyTorch hooks and does not require the external `grad-cam` package.
+
 ---
 
 ## Portfolio Context
@@ -413,7 +475,7 @@ The broader portfolio direction is:
 AI / ML for Intelligent Physical Systems
 ```
 
-This project shows that I can work not only with sensor and time-series data, but also with image-based deep learning and transfer learning for industrial inspection.
+This project shows that I can work not only with sensor and time-series data, but also with image-based deep learning, transfer learning, and explainable AI for industrial inspection.
 
 ---
 
@@ -425,7 +487,7 @@ Current limitations:
 - raw dataset files are not included in the repository
 - the current ResNet18 model uses a frozen feature extractor
 - no full fine-tuning has been performed yet
-- no Grad-CAM or visual explanation has been added yet
+- Grad-CAM examples are currently limited to a small balanced validation subset
 - results are based on the provided train/validation split
 
 ---
@@ -434,7 +496,7 @@ Current limitations:
 
 Planned extensions:
 
-- add Grad-CAM visual explanations
+- extend Grad-CAM analysis with more examples and failure-case inspection
 - fine-tune deeper ResNet18 layers
 - compare MobileNetV2 or EfficientNet
 - improve data augmentation
@@ -447,4 +509,4 @@ Planned extensions:
 
 This project demonstrates industrial surface defect classification using computer vision and deep learning.
 
-It includes dataset inspection, visual exploration, a custom baseline CNN, ResNet18 transfer learning, model evaluation, confusion matrices, prediction examples, and model-level comparison. The project is designed to be visually clear, practical, and suitable for GitHub portfolio presentation.
+It includes dataset inspection, visual exploration, a custom baseline CNN, ResNet18 transfer learning, model evaluation, confusion matrices, prediction examples, Grad-CAM visual explanations, and model-level comparison. The project is designed to be visually clear, practical, interpretable, and suitable for GitHub portfolio presentation.
