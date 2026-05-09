@@ -2,7 +2,7 @@
 
 Computer vision project for **industrial surface defect classification** using PyTorch, deep learning, transfer learning, and real defect image data.
 
-This repository is an AI-focused portfolio project for automated visual inspection in industrial environments. It demonstrates a practical workflow for classifying surface defects from image data, including dataset inspection, model training, evaluation, visualization, and model comparison.
+This repository is an AI-focused portfolio project for automated visual inspection in industrial environments. It demonstrates a practical workflow for classifying surface defects from image data, including dataset inspection, model training, evaluation, visualization, prediction examples, and model comparison.
 
 ---
 
@@ -22,6 +22,7 @@ NEU-DET surface defect dataset
 → ResNet18 transfer learning
 → training curve visualization
 → confusion matrix evaluation
+→ prediction example visualization
 → model comparison
 ```
 
@@ -210,6 +211,36 @@ The ResNet18 model improves some class-level metrics, especially for classes suc
 
 ---
 
+## Prediction Examples
+
+### ResNet18 Validation Predictions
+
+![Prediction Examples](results/prediction_examples_resnet18.png)
+
+This figure shows example predictions from the trained ResNet18 model on validation images.
+
+It helps visualize both:
+
+- correctly classified defect images
+- misclassified examples
+- model confidence on individual samples
+
+This makes the project more interpretable and provides a more concrete view of model behavior beyond aggregate metrics such as accuracy and macro F1-score.
+
+Prediction visualization script:
+
+```text
+src/create_prediction_examples.py
+```
+
+Output:
+
+```text
+results/prediction_examples_resnet18.png
+```
+
+---
+
 ## Repository Structure
 
 ```text
@@ -224,11 +255,13 @@ industrial-surface-defect-classification/
 │   ├── dataset_class_distribution.png
 │   ├── model_comparison.csv
 │   ├── model_comparison.png
+│   ├── prediction_examples_resnet18.png
 │   ├── resnet18_confusion_matrix.png
 │   ├── resnet18_training_curves.png
 │   └── sample_defect_images.png
 ├── src/
 │   ├── create_model_comparison.py
+│   ├── create_prediction_examples.py
 │   ├── inspect_dataset.py
 │   ├── train_baseline_cnn.py
 │   └── train_resnet18.py
@@ -253,6 +286,9 @@ industrial-surface-defect-classification/
 - `src/create_model_comparison.py`  
   Creates the model comparison CSV and visualization.
 
+- `src/create_prediction_examples.py`  
+  Loads the trained ResNet18 model and creates a grid of validation prediction examples.
+
 - `results/sample_defect_images.png`  
   Grid of sample images from each defect class.
 
@@ -276,6 +312,9 @@ industrial-surface-defect-classification/
 
 - `results/model_comparison.png`  
   Visual comparison of model-level validation performance.
+
+- `results/prediction_examples_resnet18.png`  
+  Example validation predictions produced by the ResNet18 model.
 
 ---
 
@@ -324,6 +363,12 @@ python src/train_resnet18.py
 python src/create_model_comparison.py
 ```
 
+### 7. Create prediction examples
+
+```bash
+python src/create_prediction_examples.py
+```
+
 ---
 
 ## Dependencies
@@ -337,7 +382,6 @@ Main libraries:
 - `matplotlib`
 - `scikit-learn`
 - `pillow`
-- `tqdm`
 
 Additional libraries prepared for future stages:
 
@@ -390,7 +434,6 @@ Current limitations:
 
 Planned extensions:
 
-- add prediction example visualizations
 - add Grad-CAM visual explanations
 - fine-tune deeper ResNet18 layers
 - compare MobileNetV2 or EfficientNet
@@ -404,4 +447,4 @@ Planned extensions:
 
 This project demonstrates industrial surface defect classification using computer vision and deep learning.
 
-It includes dataset inspection, visual exploration, a custom baseline CNN, ResNet18 transfer learning, model evaluation, confusion matrices, and model-level comparison. The project is designed to be visually clear, practical, and suitable for GitHub portfolio presentation.
+It includes dataset inspection, visual exploration, a custom baseline CNN, ResNet18 transfer learning, model evaluation, confusion matrices, prediction examples, and model-level comparison. The project is designed to be visually clear, practical, and suitable for GitHub portfolio presentation.
