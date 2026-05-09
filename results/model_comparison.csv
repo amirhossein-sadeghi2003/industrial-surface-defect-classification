@@ -1,0 +1,3 @@
+model,best_validation_accuracy,final_validation_accuracy,macro_f1,notes
+Baseline CNN,0.8833,0.87,0.86,Custom CNN trained from scratch
+ResNet18 Transfer Learning,0.8833,0.87,0.87,Pretrained ResNet18 with frozen feature extractor
