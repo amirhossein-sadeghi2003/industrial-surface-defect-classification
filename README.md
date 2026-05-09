@@ -1,26 +1,16 @@
 # Industrial Surface Defect Classification
 
-Computer vision project for classifying industrial surface defects using deep learning and transfer learning.
+Computer vision project for **industrial surface defect classification** using PyTorch, deep learning, transfer learning, and real defect image data.
 
-This repository is an AI-focused portfolio project for automated visual inspection in industrial environments. It uses a real industrial surface defect image dataset and builds a PyTorch-based image classification pipeline.
-
-The project demonstrates:
-
-- computer vision
-- image classification
-- industrial defect inspection
-- baseline CNN modeling
-- transfer learning with ResNet18
-- model evaluation and visualization
-- practical deep learning workflow with PyTorch
+This repository is an AI-focused portfolio project for automated visual inspection in industrial environments. It demonstrates a practical workflow for classifying surface defects from image data, including dataset inspection, model training, evaluation, visualization, and model comparison.
 
 ---
 
-## Project Overview
+## Overview
 
-Industrial surface defects can appear in manufacturing processes such as steel production, rolling, machining, coating, and visual quality inspection.
+Industrial surface defects can occur during manufacturing processes such as steel production, rolling, machining, coating, and visual quality inspection.
 
-The goal of this project is to classify surface defect images into multiple defect categories using deep learning.
+The goal of this project is to classify surface defect images into six defect categories using deep learning models.
 
 The current workflow is:
 
@@ -32,6 +22,7 @@ NEU-DET surface defect dataset
 → ResNet18 transfer learning
 → training curve visualization
 → confusion matrix evaluation
+→ model comparison
 ```
 
 ---
@@ -40,18 +31,17 @@ NEU-DET surface defect dataset
 
 Visual inspection is an important part of industrial monitoring and quality control.
 
-Manual inspection can be slow, inconsistent, and difficult to scale. Computer vision models can support automated defect recognition by learning visual patterns from image data.
+Manual inspection can be slow, inconsistent, and difficult to scale. Computer vision models can help automate defect recognition by learning visual patterns from image data.
 
-This project is designed as a pure AI / computer vision project while still staying close to engineering and intelligent monitoring systems.
+This project is designed as a pure AI / computer vision project while still staying close to engineering applications such as:
 
-It complements my other portfolio projects in:
+- industrial inspection
+- intelligent monitoring
+- quality control
+- defect recognition
+- AI-assisted manufacturing
 
-- embedded AI
-- sensor-based condition monitoring
-- vibration-based fault diagnosis
-- IoT digital twin systems
-- dynamic system modeling
-- state estimation and Kalman filtering
+It complements my other portfolio projects in embedded AI, sensor-based condition monitoring, vibration-based fault diagnosis, IoT digital twins, dynamic systems, and state estimation.
 
 ---
 
@@ -59,7 +49,7 @@ It complements my other portfolio projects in:
 
 This project uses the **NEU Surface Defect Dataset (NEU-DET)**.
 
-The dataset contains grayscale surface defect images from industrial steel surfaces.
+The dataset contains grayscale images of industrial steel surface defects.
 
 The six defect classes are:
 
@@ -109,7 +99,7 @@ Raw dataset files are not tracked in Git.
 
 ## Methods
 
-The project currently compares two deep learning approaches.
+This project currently compares two deep learning approaches.
 
 ### 1. Baseline CNN
 
@@ -142,7 +132,7 @@ Main characteristics:
 - image size: `224 × 224`
 - frozen feature extractor
 - replaced final classification layer for 6 defect classes
-- trained only the final layer
+- trained only the final classification layer
 
 Training script:
 
@@ -156,14 +146,23 @@ src/train_resnet18.py
 
 ### Model Comparison
 
-| Model | Best Validation Accuracy | Notes |
-|---|---:|---|
-| Baseline CNN | 0.8833 | Custom CNN trained from scratch |
-| ResNet18 Transfer Learning | 0.8833 | Pretrained ResNet18 with frozen feature extractor |
+![Model Comparison](results/model_comparison.png)
 
-Both models achieved similar validation accuracy on the current dataset split.
+| Model | Best Validation Accuracy | Final Validation Accuracy | Macro F1-score | Notes |
+|---|---:|---:|---:|---|
+| Baseline CNN | 0.8833 | about 0.87 | about 0.86 | Custom CNN trained from scratch |
+| ResNet18 Transfer Learning | 0.8833 | about 0.87 | about 0.87 | Frozen pretrained ResNet18 feature extractor |
 
-The baseline CNN already performs reasonably well, while the ResNet18 transfer learning model provides a strong reference point for future improvements such as partial fine-tuning, stronger augmentation, and Grad-CAM visualization.
+Both models achieved similar validation accuracy on the current validation split.
+
+The baseline CNN performs competitively despite being trained from scratch, while ResNet18 transfer learning provides a strong reference point for future improvements such as partial fine-tuning, stronger data augmentation, and visual explainability.
+
+Official comparison outputs:
+
+```text
+results/model_comparison.csv
+results/model_comparison.png
+```
 
 ---
 
@@ -177,7 +176,7 @@ The baseline CNN already performs reasonably well, while the ResNet18 transfer l
 
 ![Baseline CNN Confusion Matrix](results/baseline_cnn_confusion_matrix.png)
 
-Baseline CNN final validation summary:
+Baseline CNN validation summary:
 
 | Metric | Value |
 |---|---:|
@@ -199,7 +198,7 @@ The baseline CNN performs strongly on classes such as `crazing`, `patches`, and 
 
 ![ResNet18 Confusion Matrix](results/resnet18_confusion_matrix.png)
 
-ResNet18 final validation summary:
+ResNet18 validation summary:
 
 | Metric | Value |
 |---|---:|
@@ -207,7 +206,7 @@ ResNet18 final validation summary:
 | Final validation accuracy | about 0.87 |
 | Macro F1-score | about 0.87 |
 
-The ResNet18 model improves precision for some classes, such as `inclusion` and `pitted_surface`, but still shows class-level tradeoffs. This suggests that future work should focus on fine-tuning, augmentation, and better model interpretation.
+The ResNet18 model improves some class-level metrics, especially for classes such as `inclusion` and `pitted_surface`, but still shows tradeoffs between defect categories. This suggests that future work should focus on fine-tuning, augmentation, and visual interpretation.
 
 ---
 
@@ -216,19 +215,20 @@ The ResNet18 model improves precision for some classes, such as `inclusion` and 
 ```text
 industrial-surface-defect-classification/
 ├── data/
-│   ├── raw/
-│   └── processed/
-├── docs/
+│   └── raw/
 ├── models/
 ├── results/
 │   ├── baseline_cnn_confusion_matrix.png
 │   ├── baseline_cnn_training_curves.png
 │   ├── dataset_class_distribution.csv
 │   ├── dataset_class_distribution.png
+│   ├── model_comparison.csv
+│   ├── model_comparison.png
 │   ├── resnet18_confusion_matrix.png
 │   ├── resnet18_training_curves.png
 │   └── sample_defect_images.png
 ├── src/
+│   ├── create_model_comparison.py
 │   ├── inspect_dataset.py
 │   ├── train_baseline_cnn.py
 │   └── train_resnet18.py
@@ -241,16 +241,17 @@ industrial-surface-defect-classification/
 
 ## Main Files
 
-Important files currently included in the project:
-
 - `src/inspect_dataset.py`  
-  Inspects the dataset, exports class distribution, and creates sample image visualizations.
+  Inspects the dataset, exports class distribution results, and creates sample image visualizations.
 
 - `src/train_baseline_cnn.py`  
-  Trains a custom baseline CNN model and generates training curves and a confusion matrix.
+  Trains a custom baseline CNN and generates training curves and a confusion matrix.
 
 - `src/train_resnet18.py`  
   Trains a ResNet18 transfer learning baseline using a frozen pretrained feature extractor.
+
+- `src/create_model_comparison.py`  
+  Creates the model comparison CSV and visualization.
 
 - `results/sample_defect_images.png`  
   Grid of sample images from each defect class.
@@ -270,6 +271,12 @@ Important files currently included in the project:
 - `results/resnet18_confusion_matrix.png`  
   Confusion matrix for ResNet18 transfer learning.
 
+- `results/model_comparison.csv`  
+  Tabular comparison of trained models.
+
+- `results/model_comparison.png`  
+  Visual comparison of model-level validation performance.
+
 ---
 
 ## How to Run
@@ -285,6 +292,12 @@ source venv/bin/activate
 
 ```bash
 pip install -r requirements.txt
+```
+
+If internet access is limited, dependencies can also be installed from a local wheelhouse:
+
+```bash
+pip install --no-index --find-links=/home/amir/python-wheels -r requirements.txt
 ```
 
 ### 3. Inspect the dataset
@@ -303,6 +316,12 @@ python src/train_baseline_cnn.py
 
 ```bash
 python src/train_resnet18.py
+```
+
+### 6. Create model comparison results
+
+```bash
+python src/create_model_comparison.py
 ```
 
 ---
@@ -331,19 +350,26 @@ Additional libraries prepared for future stages:
 
 ---
 
-## Project Role in Portfolio
+## Portfolio Context
 
-This project adds a visually strong AI / computer vision project to my portfolio.
+This project adds a visually strong AI / computer vision component to my portfolio.
 
 It complements projects focused on:
 
-- sensor-based embedded AI
-- real vibration fault diagnosis
+- embedded AI
+- real sensor data
+- vibration-based fault diagnosis
 - IoT and digital twin systems
 - dynamic system simulation
 - state estimation and Kalman filtering
 
-The project demonstrates that I can work not only with sensor and time-series data, but also with image-based deep learning and transfer learning.
+The broader portfolio direction is:
+
+```text
+AI / ML for Intelligent Physical Systems
+```
+
+This project shows that I can work not only with sensor and time-series data, but also with image-based deep learning and transfer learning for industrial inspection.
 
 ---
 
@@ -364,8 +390,7 @@ Current limitations:
 
 Planned extensions:
 
-- add model comparison CSV
-- add prediction examples
+- add prediction example visualizations
 - add Grad-CAM visual explanations
 - fine-tune deeper ResNet18 layers
 - compare MobileNetV2 or EfficientNet
@@ -379,4 +404,4 @@ Planned extensions:
 
 This project demonstrates industrial surface defect classification using computer vision and deep learning.
 
-It includes dataset inspection, visual exploration, a custom baseline CNN, and a ResNet18 transfer learning baseline. The project is designed to be visually clear, practical, and suitable for GitHub portfolio presentation.
+It includes dataset inspection, visual exploration, a custom baseline CNN, ResNet18 transfer learning, model evaluation, confusion matrices, and model-level comparison. The project is designed to be visually clear, practical, and suitable for GitHub portfolio presentation.
