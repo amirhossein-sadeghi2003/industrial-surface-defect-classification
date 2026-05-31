@@ -1,8 +1,18 @@
 # Industrial Surface Defect Classification
 
-Computer vision project for **industrial surface defect classification** using PyTorch, deep learning, transfer learning, Grad-CAM explainability, and real defect image data.
+I built this as a supporting computer vision project for industrial visual inspection. It uses the NEU-DET steel surface defect dataset, compares a small baseline CNN with a frozen ResNet18 transfer-learning model, and adds prediction examples plus Grad-CAM visual explanations.
 
-This repository is an AI-focused portfolio project for automated visual inspection in industrial environments. It demonstrates a practical workflow for classifying surface defects from image data, including dataset inspection, model training, evaluation, visualization, prediction examples, Grad-CAM visual explanations, and model comparison.
+The most useful part of the current version is that the result is not perfect: both models stay around 0.87 validation accuracy, and some classes such as `inclusion` and `pitted_surface` remain harder. That makes the project more useful for error analysis than a clean-looking but unrealistic 100% result.
+
+Current workflow:
+
+- inspect the NEU-DET dataset
+- visualize sample defect images and class balance
+- train a baseline CNN from scratch
+- train a frozen ResNet18 transfer-learning baseline
+- compare validation performance
+- inspect prediction examples
+- generate Grad-CAM explanations for selected validation images
 
 ---
 
@@ -29,22 +39,13 @@ NEU-DET surface defect dataset
 
 ---
 
-## Motivation
+## What this version shows
 
-Visual inspection is an important part of industrial monitoring and quality control.
+This version is a validation-split image classification baseline, not a production inspection system.
 
-Manual inspection can be slow, inconsistent, and difficult to scale. Computer vision models can help automate defect recognition by learning visual patterns from image data.
+The baseline CNN and frozen ResNet18 model reach similar validation performance. That is useful because it shows that transfer learning is not automatically better unless the feature extractor is fine-tuned, the augmentation strategy is improved, or more failure-case analysis is done.
 
-This project is designed as a pure AI / computer vision project while still staying close to engineering applications such as:
-
-- industrial inspection
-- intelligent monitoring
-- quality control
-- defect recognition
-- AI-assisted manufacturing
-- explainable visual inspection
-
-It complements my other portfolio projects in embedded AI, sensor-based condition monitoring, vibration-based fault diagnosis, IoT digital twins, dynamic systems, and state estimation.
+Grad-CAM is included as a qualitative inspection tool. It helps check whether the ResNet18 model is looking at visually meaningful regions, but it should not be treated as a full explanation of model reliability.
 
 ---
 
@@ -387,12 +388,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-If internet access is limited, dependencies can also be installed from a local wheelhouse:
-
-```bash
-pip install --no-index --find-links=/home/amir/python-wheels -r requirements.txt
-```
-
 ### 3. Inspect the dataset
 
 ```bash
@@ -456,29 +451,6 @@ Note: the current Grad-CAM visualization script uses a lightweight custom implem
 
 ---
 
-## Portfolio Context
-
-This project adds a visually strong AI / computer vision component to my portfolio.
-
-It complements projects focused on:
-
-- embedded AI
-- real sensor data
-- vibration-based fault diagnosis
-- IoT and digital twin systems
-- dynamic system simulation
-- state estimation and Kalman filtering
-
-The broader portfolio direction is:
-
-```text
-AI / ML for Intelligent Physical Systems
-```
-
-This project shows that I can work not only with sensor and time-series data, but also with image-based deep learning, transfer learning, and explainable AI for industrial inspection.
-
----
-
 ## Limitations
 
 Current limitations:
@@ -488,7 +460,7 @@ Current limitations:
 - the current ResNet18 model uses a frozen feature extractor
 - no full fine-tuning has been performed yet
 - Grad-CAM examples are currently limited to a small balanced validation subset
-- results are based on the provided train/validation split
+- results are based on the provided train/validation split, not a cross-dataset or production inspection test
 
 ---
 
@@ -507,6 +479,8 @@ Planned extensions:
 
 ## Summary
 
-This project demonstrates industrial surface defect classification using computer vision and deep learning.
+This project uses computer vision for industrial surface defect classification on NEU-DET images.
 
-It includes dataset inspection, visual exploration, a custom baseline CNN, ResNet18 transfer learning, model evaluation, confusion matrices, prediction examples, Grad-CAM visual explanations, and model-level comparison. The project is designed to be visually clear, practical, interpretable, and suitable for GitHub portfolio presentation.
+The current result is a practical baseline rather than a finished inspection system: a custom CNN and a frozen ResNet18 model both reach about 0.87 validation accuracy, while several defect classes remain harder to separate. The prediction examples and Grad-CAM outputs make those limitations easier to inspect visually.
+
+The next meaningful improvement would be deeper failure-case analysis or fine-tuning, not adding more presentation polish.
