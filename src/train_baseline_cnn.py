@@ -1,3 +1,6 @@
+import csv
+import json
+import random
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -54,8 +57,15 @@ class SimpleCNN(nn.Module):
 
 
 def set_seed(seed):
+    random.seed(seed)
     torch.manual_seed(seed)
     np.random.seed(seed)
+
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 def get_device():
@@ -65,6 +75,8 @@ def get_device():
 
 
 def build_dataloaders():
+    generator = torch.Generator().manual_seed(RANDOM_SEED)
+
     train_transform = transforms.Compose(
         [
             transforms.Grayscale(num_output_channels=1),
@@ -100,6 +112,7 @@ def build_dataloaders():
         batch_size=BATCH_SIZE,
         shuffle=True,
         num_workers=2,
+        generator=generator,
     )
 
     val_loader = DataLoader(
@@ -219,6 +232,66 @@ def save_confusion_matrix(y_true, y_pred, class_names):
     print(f"Saved confusion matrix to: {output_path}")
 
 
+def save_history(history):
+    output_path = RESULTS_DIR / "baseline_cnn_history.csv"
+    fieldnames = [
+        "epoch",
+        "train_loss",
+        "train_accuracy",
+        "validation_loss",
+        "validation_accuracy",
+    ]
+
+    with output_path.open("w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for index in range(len(history["train_loss"])):
+            writer.writerow(
+                {
+                    "epoch": index + 1,
+                    "train_loss": history["train_loss"][index],
+                    "train_accuracy": history["train_acc"][index],
+                    "validation_loss": history["val_loss"][index],
+                    "validation_accuracy": history["val_acc"][index],
+                }
+            )
+
+    print(f"Saved training history to: {output_path}")
+
+
+def save_metrics(
+    best_epoch,
+    best_val_acc,
+    final_epoch_val_acc,
+    selected_checkpoint_loss,
+    selected_checkpoint_acc,
+    report,
+    validation_images,
+    best_model_path,
+):
+    output_path = RESULTS_DIR / "baseline_cnn_metrics.json"
+    metrics = {
+        "model": "Baseline CNN",
+        "checkpoint": str(best_model_path),
+        "selection_metric": "validation_accuracy",
+        "best_epoch": best_epoch,
+        "best_validation_accuracy": best_val_acc,
+        "final_epoch_validation_accuracy": final_epoch_val_acc,
+        "selected_checkpoint_validation_loss": selected_checkpoint_loss,
+        "selected_checkpoint_validation_accuracy": selected_checkpoint_acc,
+        "selected_checkpoint_macro_f1": report["macro avg"]["f1-score"],
+        "validation_images": validation_images,
+        "random_seed": RANDOM_SEED,
+    }
+
+    with output_path.open("w", encoding="utf-8") as json_file:
+        json.dump(metrics, json_file, indent=2)
+        json_file.write("\n")
+
+    print(f"Saved evaluation metrics to: {output_path}")
+
+
 def main():
     set_seed(RANDOM_SEED)
 
@@ -249,7 +322,8 @@ def main():
         "val_acc": [],
     }
 
-    best_val_acc = 0.0
+    best_val_acc = float("-inf")
+    best_epoch = 0
     best_model_path = MODELS_DIR / "baseline_cnn_best.pth"
 
     for epoch in range(1, NUM_EPOCHS + 1):
@@ -280,17 +354,57 @@ def main():
 
         if val_acc > best_val_acc:
             best_val_acc = val_acc
+            best_epoch = epoch
             torch.save(model.state_dict(), best_model_path)
             print(f"Saved best model to: {best_model_path}")
 
-    print("\nFinal validation report:")
-    print(classification_report(y_true, y_pred, target_names=class_names))
+    final_epoch_val_acc = history["val_acc"][-1]
+
+    model.load_state_dict(
+        torch.load(best_model_path, map_location=device, weights_only=True)
+    )
+    selected_loss, selected_acc, y_true, y_pred = evaluate(
+        model,
+        val_loader,
+        criterion,
+        device,
+    )
+    report = classification_report(
+        y_true,
+        y_pred,
+        target_names=class_names,
+        output_dict=True,
+        zero_division=0,
+    )
+
+    print("\nSelected-checkpoint validation report:")
+    print(
+        classification_report(
+            y_true,
+            y_pred,
+            target_names=class_names,
+            zero_division=0,
+        )
+    )
 
     save_training_curves(history)
+    save_history(history)
     save_confusion_matrix(y_true, y_pred, class_names)
+    save_metrics(
+        best_epoch=best_epoch,
+        best_val_acc=best_val_acc,
+        final_epoch_val_acc=final_epoch_val_acc,
+        selected_checkpoint_loss=selected_loss,
+        selected_checkpoint_acc=selected_acc,
+        report=report,
+        validation_images=len(val_dataset),
+        best_model_path=best_model_path,
+    )
 
     print("\nSummary:")
-    print(f"Best validation accuracy: {best_val_acc:.4f}")
+    print(f"Selected epoch: {best_epoch}")
+    print(f"Selected-checkpoint validation accuracy: {selected_acc:.4f}")
+    print(f"Selected-checkpoint macro F1: {report['macro avg']['f1-score']:.4f}")
 
 
 if __name__ == "__main__":

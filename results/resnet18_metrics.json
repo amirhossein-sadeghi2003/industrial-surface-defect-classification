@@ -1,0 +1,13 @@
+{
+  "model": "ResNet18 Transfer Learning",
+  "checkpoint": "models/resnet18_best.pth",
+  "selection_metric": "validation_accuracy",
+  "best_epoch": 10,
+  "best_validation_accuracy": 0.9138888888888889,
+  "final_epoch_validation_accuracy": 0.9138888888888889,
+  "selected_checkpoint_validation_loss": 0.5884963181283739,
+  "selected_checkpoint_validation_accuracy": 0.9138888888888889,
+  "selected_checkpoint_macro_f1": 0.9081148916120986,
+  "validation_images": 360,
+  "random_seed": 42
+}

@@ -1,0 +1,13 @@
+{
+  "model": "Baseline CNN",
+  "checkpoint": "models/baseline_cnn_best.pth",
+  "selection_metric": "validation_accuracy",
+  "best_epoch": 14,
+  "best_validation_accuracy": 0.8861111111111111,
+  "final_epoch_validation_accuracy": 0.875,
+  "selected_checkpoint_validation_loss": 0.3065141351686584,
+  "selected_checkpoint_validation_accuracy": 0.8861111111111111,
+  "selected_checkpoint_macro_f1": 0.8841411682200965,
+  "validation_images": 360,
+  "random_seed": 42
+}
